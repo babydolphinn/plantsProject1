@@ -1,6 +1,7 @@
 import Foundation
 
-enum Room: String, CaseIterable, Identifiable{
+/* allows Swift to convert your enum values into a format that can be saved and loaded. */
+enum Room: String, CaseIterable, Identifiable, Codable{
     var id: String { rawValue }
     
     case bedroom = "Bedroom"
@@ -12,7 +13,7 @@ enum Room: String, CaseIterable, Identifiable{
 }
 
 
-enum Light: String, CaseIterable, Identifiable {
+enum Light: String, CaseIterable, Identifiable, Codable {
     var id: String { rawValue }
     
     case fullSun = "Full sun"
@@ -20,7 +21,7 @@ enum Light: String, CaseIterable, Identifiable {
     case lowLight = "Low light"
 }
 
-enum WateringDays: String, CaseIterable, Identifiable{
+enum WateringDays: String, CaseIterable, Identifiable, Codable{
     var id: String { rawValue }
     
     var numberOfDays: Int {
@@ -51,7 +52,7 @@ enum WateringDays: String, CaseIterable, Identifiable{
 }
 
 
-enum Water: String, CaseIterable, Identifiable {
+enum Water: String, CaseIterable, Identifiable, Codable {
     var id: String { rawValue }
     
     case small = "20-50 ml"
@@ -59,3 +60,4 @@ enum Water: String, CaseIterable, Identifiable {
     case large = "100-200 ml"
     case extraLarge = "200-300 ml"
 }
+
