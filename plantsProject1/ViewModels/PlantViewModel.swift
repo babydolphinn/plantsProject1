@@ -13,7 +13,8 @@ final class PlantViewModel {
         wateringDays: WateringDays,
         water: Water,
         context: ModelContext
-    ) {
+    )
+    {
         let plant = Plant(
             name: name,
             room: room,
@@ -24,5 +25,18 @@ final class PlantViewModel {
 
         context.insert(plant)
     }
+    
+    func toggleWatered(plant: Plant) {
+
+        // If already watered today, uncheck it.
+        if let lastWatered = plant.lastWateredAt,
+           Calendar.current.isDateInToday(lastWatered) {
+            plant.lastWateredAt = nil
+        } else {
+            // Otherwise, mark it as watered now.
+            plant.lastWateredAt = Date()
+        }
+    }
+
 }
 
