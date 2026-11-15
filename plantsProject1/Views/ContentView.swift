@@ -162,6 +162,13 @@ struct ContentView: View {
                                         plant: plant
                                     )
                                 }
+                                
+                                Task {
+                                    await NotificationManager.shared.synchronize(
+                                        context: modelContext
+                                    )
+                                }
+
                             },
                             onEdit: {
 
@@ -182,6 +189,13 @@ struct ContentView: View {
                                         context: modelContext
                                     )
                                 }
+                                
+                                Task {
+                                    await NotificationManager.shared.synchronize(
+                                        context: modelContext
+                                    )
+                                }
+
 
                             } label: {
 
@@ -226,6 +240,13 @@ struct ContentView: View {
             }
         }
         .preferredColorScheme(.dark)
+
+        .task {
+            // Rebuild upcoming reminders when the app opens.
+            await NotificationManager.shared.synchronize(
+                context: modelContext
+            )
+        }
 
         // Existing users should never see onboarding
         // again just because they deleted their plants.

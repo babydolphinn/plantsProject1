@@ -217,6 +217,15 @@ struct SetReminderView: View {
             )
         }
 
+        // Update notifications after adding or editing.
+        // Only new plants trigger the permission request.
+        Task {
+            await NotificationManager.shared.synchronize(
+                context: modelContext,
+                askPermission: plant == nil
+            )
+        }
+
         dismiss()
     }
 
@@ -229,6 +238,14 @@ struct SetReminderView: View {
             plant,
             context: modelContext
         )
+
+        // Cancel deleted plant's reminders
+        // and update the remaining schedules.
+        Task {
+            await NotificationManager.shared.synchronize(
+                context: modelContext
+            )
+        }
 
         dismiss()
     }
