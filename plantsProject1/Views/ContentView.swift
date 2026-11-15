@@ -4,37 +4,47 @@ import SwiftData
 
 struct ContentView: View {
 
-    @Environment(\.modelContext) private var modelContext
-
     @Query private var plants: [Plant]
 
     @State private var showingSetReminder = false
 
     private let viewModel = PlantViewModel()
 
-    // Count how many plants were watered today
-    private var completedCount: Int {
+    // Only plants with a reminder due today
+    private var todayPlants: [Plant] {
         plants.filter { plant in
-            guard let lastWatered = plant.lastWateredAt else {
-                return false
-            }
+            viewModel.isDueToday(plant)
+        }
+    }
 
-            return Calendar.current.isDateInToday(lastWatered)
+    // Count today's completed reminders
+    private var completedCount: Int {
+        todayPlants.filter { plant in
+            viewModel.isWateredToday(plant)
         }.count
     }
 
-    // Convert completed plants into a progress value from 0 to 1
+    // Progress is based on today's reminders only
     private var wateringProgress: Double {
-        guard !plants.isEmpty else { return 0 }
+        guard !todayPlants.isEmpty else {
+            return 0
+        }
 
-        return Double(completedCount) / Double(plants.count)
+        return Double(completedCount)
+            / Double(todayPlants.count)
+    }
+
+    // Show All Done when there are plants,
+    // but no reminders left to complete today
+    private var allDone: Bool {
+        !plants.isEmpty &&
+        completedCount == todayPlants.count
     }
 
     var body: some View {
 
         ZStack {
 
-            // Background color from Assets
             Color("Background")
                 .ignoresSafeArea()
 
@@ -68,17 +78,18 @@ struct ContentView: View {
                         )
                 }
 
-                // MARK: - Progress Section
-                // Hide progress when all plants are completed
-                if plants.isEmpty || completedCount < plants.count {
+                // MARK: - Today's Progress
+                if !allDone {
 
                     VStack(spacing: 15) {
 
+                        
                         Text(
                             completedCount == 0
                                 ? "Your plants are waiting for a sip 💦"
-                                : "\(completedCount) of \(plants.count) plants watered today 💦"
+                                : "\(completedCount) of your plants feel loved today ✨"
                         )
+
                         .font(AppTypography.formLabel)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -94,15 +105,14 @@ struct ContentView: View {
                     .padding(.top, 38)
                 }
 
-                // MARK: - Completed Screen or Plant List
-                if !plants.isEmpty && completedCount == plants.count {
+                // MARK: - Completed Screen or Today's List
+                if allDone {
 
-                    // Show the Sketch-inspired All Done screen
                     AllRemindersCompletedView()
 
                 } else {
 
-                    List(plants) { plant in
+                    List(todayPlants) { plant in
 
                         PlantRow(plant: plant) {
 
