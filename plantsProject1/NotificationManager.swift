@@ -136,11 +136,7 @@ final class NotificationManager {
 
             let content = UNMutableNotificationContent()
 
-            content.title = "Time to water 💧"
-            content.body =
-                "\(reminder.plant.name) in " +
-                "\(reminder.plant.room.rawValue) needs " +
-                "\(reminder.plant.water.rawValue)"
+            content.title = "Hey! let's water your plant"
 
             content.sound = .default
 
