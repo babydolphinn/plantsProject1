@@ -7,24 +7,23 @@ struct ContentView: View {
     @Query private var plants: [Plant]
 
     @State private var showingSetReminder = false
+    @State private var selectedPlant: Plant? = nil
 
     private let viewModel = PlantViewModel()
 
-    // Only plants with a reminder due today
+    // MARK: - Today's Reminders
     private var todayPlants: [Plant] {
         plants.filter { plant in
             viewModel.isDueToday(plant)
         }
     }
 
-    // Count today's completed reminders
     private var completedCount: Int {
         todayPlants.filter { plant in
             viewModel.isWateredToday(plant)
         }.count
     }
 
-    // Progress is based on today's reminders only
     private var wateringProgress: Double {
         guard !todayPlants.isEmpty else {
             return 0
@@ -34,8 +33,6 @@ struct ContentView: View {
             / Double(todayPlants.count)
     }
 
-    // Show All Done when there are plants,
-    // but no reminders left to complete today
     private var allDone: Bool {
         !plants.isEmpty &&
         completedCount == todayPlants.count
@@ -51,7 +48,10 @@ struct ContentView: View {
             VStack {
 
                 // MARK: - Header
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 0
+                ) {
 
                     Text("My Plants 🌱")
                         .font(AppTypography.screenTitle)
@@ -78,18 +78,16 @@ struct ContentView: View {
                         )
                 }
 
-                // MARK: - Today's Progress
+                // MARK: - Progress
                 if !allDone {
 
                     VStack(spacing: 15) {
 
-                        
                         Text(
                             completedCount == 0
                                 ? "Your plants are waiting for a sip 💦"
                                 : "\(completedCount) of your plants feel loved today ✨"
                         )
-
                         .font(AppTypography.formLabel)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -105,7 +103,7 @@ struct ContentView: View {
                     .padding(.top, 38)
                 }
 
-                // MARK: - Completed Screen or Today's List
+                // MARK: - Completed or List
                 if allDone {
 
                     AllRemindersCompletedView()
@@ -114,14 +112,24 @@ struct ContentView: View {
 
                     List(todayPlants) { plant in
 
-                        PlantRow(plant: plant) {
+                        PlantRow(
+                            plant: plant,
+                            onToggle: {
 
-                            withAnimation {
-                                viewModel.toggleWatered(
-                                    plant: plant
-                                )
+                                withAnimation {
+                                    viewModel.toggleWatered(
+                                        plant: plant
+                                    )
+                                }
+                            },
+                            onEdit: {
+
+                                // Open the existing plant
+                                // in the same Set Reminder sheet
+                                selectedPlant = plant
+                                showingSetReminder = true
                             }
-                        }
+                        )
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(
                             Color("Background")
@@ -133,7 +141,7 @@ struct ContentView: View {
                 }
             }
 
-            // MARK: - Floating Add Button
+            // MARK: - Add Button
             VStack {
 
                 Spacer()
@@ -146,6 +154,9 @@ struct ContentView: View {
                         symbol: "plus",
                         isProminent: true,
                         action: {
+
+                            // Open a blank form
+                            selectedPlant = nil
                             showingSetReminder = true
                         }
                     )
@@ -156,18 +167,25 @@ struct ContentView: View {
         }
         .preferredColorScheme(.dark)
 
-        // MARK: - Set Reminder Sheet
-        .sheet(isPresented: $showingSetReminder) {
+        // MARK: - Add / Edit Sheet
+        .sheet(
+            isPresented: $showingSetReminder,
+            onDismiss: {
+                selectedPlant = nil
+            }
+        ) {
 
-            SetReminderView()
-                .presentationDetents([.large])
-                .presentationDragIndicator(.hidden)
-                .presentationCornerRadius(
-                    AppSpacing.sheetRadius
-                )
-                .presentationBackground(
-                    Color("SheetBackground")
-                )
+            SetReminderView(
+                plant: selectedPlant
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.hidden)
+            .presentationCornerRadius(
+                AppSpacing.sheetRadius
+            )
+            .presentationBackground(
+                Color("SheetBackground")
+            )
         }
     }
 }

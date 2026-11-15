@@ -1,26 +1,52 @@
+
 import SwiftData
 import SwiftUI
 
 struct SetReminderView: View {
 
-    // Gives this view access to the SwiftData database
     @Environment(\.modelContext) private var modelContext
-    // Reuse the ViewModel we already created
-    private let viewModel = PlantViewModel()
     @Environment(\.dismiss) private var dismiss
 
-    // Form values
-    @State private var plantName = ""
-    @State private var room: Room = .bedroom
-    @State private var light: Light = .fullSun
-    @State private var wateringDays: WateringDays = .everyDay
-    @State private var water: Water = .small
+    private let viewModel = PlantViewModel()
+
+    // nil means we're adding a new plant.
+    // An existing plant means we're editing it.
+    let plant: Plant?
+
+    @State private var plantName: String
+    @State private var room: Room
+    @State private var light: Light
+    @State private var wateringDays: WateringDays
+    @State private var water: Water
+
+    // Fill the form automatically when editing
+    init(plant: Plant? = nil) {
+        self.plant = plant
+
+        _plantName = State(
+            initialValue: plant?.name ?? ""
+        )
+        _room = State(
+            initialValue: plant?.room ?? .bedroom
+        )
+        _light = State(
+            initialValue: plant?.light ?? .fullSun
+        )
+        _wateringDays = State(
+            initialValue: plant?.wateringDays ?? .everyDay
+        )
+        _water = State(
+            initialValue: plant?.water ?? .small
+        )
+    }
 
     var body: some View {
+
         VStack(spacing: 0) {
 
-            // Top bar
+            // MARK: - Top Bar
             HStack {
+
                 GlassCircleButton(
                     symbol: "xmark",
                     isProminent: false,
@@ -43,28 +69,40 @@ struct SetReminderView: View {
                     }
                 )
             }
-            .padding(.horizontal, AppSpacing.screenPadding)
+            .padding(
+                .horizontal,
+                AppSpacing.screenPadding
+            )
 
-            // Form cards
+            // MARK: - Form
             VStack(spacing: 40) {
 
+                // Plant Name
                 FormCard {
+
                     HStack {
+
                         Text("Plant Name")
                             .font(AppTypography.formLabel)
                             .foregroundStyle(.white)
 
-                        TextField("Pothos", text: $plantName)
-                            .font(AppTypography.formLabel)
-                            .foregroundStyle(.white)
-                            .tint(Color("MintAccent"))
-                            .multilineTextAlignment(.trailing)
+                        TextField(
+                            "Pothos",
+                            text: $plantName
+                        )
+                        .font(AppTypography.formLabel)
+                        .foregroundStyle(.white)
+                        .tint(Color("MintAccent"))
+                        .multilineTextAlignment(.trailing)
                     }
                     .padding(AppSpacing.screenPadding)
                 }
 
+                // Room and Light
                 FormCard {
+
                     VStack(spacing: 0) {
+
                         PickerRow(
                             title: "Room",
                             symbol: "location",
@@ -85,8 +123,11 @@ struct SetReminderView: View {
                     }
                 }
 
+                // Watering Days and Water
                 FormCard {
+
                     VStack(spacing: 0) {
+
                         PickerRow(
                             title: "Watering Days",
                             symbol: "drop",
@@ -106,8 +147,33 @@ struct SetReminderView: View {
                         )
                     }
                 }
+
+                // MARK: - Delete Reminder
+                // Only appears when editing an existing plant
+                if plant != nil {
+
+                    FormCard {
+
+                        Button {
+                            deletePlant()
+                        } label: {
+
+                            Text("Delete Reminder")
+                                .font(AppTypography.formLabel)
+                                .foregroundStyle(
+                                    Color("DestructiveRed")
+                                )
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
             }
-            .padding(.horizontal, AppSpacing.screenPadding)
+            .padding(
+                .horizontal,
+                AppSpacing.screenPadding
+            )
             .padding(.top, 55)
 
             Spacer()
@@ -116,28 +182,55 @@ struct SetReminderView: View {
         .background(Color("SheetBackground"))
         .preferredColorScheme(.dark)
     }
-    
+
+    // MARK: - Save
     private func savePlant() {
 
-        // Remove extra spaces from the plant name
-        let name = plantName.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // Don't save plants without a name
-        guard !name.isEmpty else { return }
-
-        // Ask our ViewModel to create and insert the plant
-        viewModel.addPlant(
-            name: name,
-            room: room,
-            light: light,
-            wateringDays: wateringDays,
-            water: water,
-            context: modelContext
+        let name = plantName.trimmingCharacters(
+            in: .whitespacesAndNewlines
         )
 
-        // Close the sheet after saving
+        guard !name.isEmpty else { return }
+
+        if let plant {
+
+            // Edit the existing plant
+            viewModel.updatePlant(
+                plant,
+                name: name,
+                room: room,
+                light: light,
+                wateringDays: wateringDays,
+                water: water
+            )
+
+        } else {
+
+            // Create a new plant
+            viewModel.addPlant(
+                name: name,
+                room: room,
+                light: light,
+                wateringDays: wateringDays,
+                water: water,
+                context: modelContext
+            )
+        }
+
         dismiss()
     }
 
+    // MARK: - Delete
+    private func deletePlant() {
+
+        guard let plant else { return }
+
+        viewModel.deletePlant(
+            plant,
+            context: modelContext
+        )
+
+        dismiss()
+    }
 }
 
