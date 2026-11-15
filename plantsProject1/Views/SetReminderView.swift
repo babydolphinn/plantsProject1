@@ -116,7 +116,7 @@ struct SetReminderView: View {
 
                         PickerRow(
                             title: "Light",
-                            symbol: "sun.max",
+                            symbol: light.symbol,
                             options: Array(Light.allCases),
                             selection: $light
                         )

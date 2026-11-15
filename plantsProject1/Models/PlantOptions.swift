@@ -8,18 +8,35 @@ enum Room: String, CaseIterable, Identifiable, Codable{
     case livingRoom = "Living Room"
     case kitchen = "Kitchen"
     case bathroom = "Bathroom"
-    case homeOffice = "Home Office"
     case balcony = "Balcony"
 }
 
 
+
+
 enum Light: String, CaseIterable, Identifiable, Codable {
     var id: String { rawValue }
-    
+
+    // Keep these EXACT values.
+    // SwiftData uses them to decode saved plants.
     case fullSun = "Full sun"
-    case partialLight = "Partial Light"
-    case lowLight = "Low light"
+    case partialLight = "Partial sun"
+    case lowLight = "Low sun"
+
+    // Icons are separate from saved data.
+    var symbol: String {
+        switch self {
+        case .fullSun:
+            return "sun.max"
+        case .partialLight:
+            return "sun.horizon"
+        case .lowLight:
+            return "moon"
+        }
+    }
 }
+
+
 
 enum WateringDays: String, CaseIterable, Identifiable, Codable{
     var id: String { rawValue }

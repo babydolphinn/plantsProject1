@@ -79,7 +79,7 @@ struct PlantRow: View {
 
                     TagPill(
                         title: plant.light.rawValue,
-                        symbol: "sun.max",
+                        symbol: plant.light.symbol,
                         colorName: "SunTag"
                     )
 
