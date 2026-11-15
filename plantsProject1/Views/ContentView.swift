@@ -8,7 +8,9 @@ struct ContentView: View {
 
     @State private var showingSetReminder = false
     @State private var selectedPlant: Plant? = nil
-
+    
+    @Environment(\.modelContext) private var modelContext
+    
     private let viewModel = PlantViewModel()
 
     // MARK: - Today's Reminders
@@ -130,6 +132,20 @@ struct ContentView: View {
                                 showingSetReminder = true
                             }
                         )
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    viewModel.deletePlant(
+                                        plant,
+                                        context: modelContext
+                                    )
+                                }
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .tint(Color("DestructiveRed"))
+                        }
+
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(
                             Color("Background")
