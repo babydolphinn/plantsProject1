@@ -4,16 +4,20 @@ import SwiftData
 
 struct ContentView: View {
 
+    @Environment(\.modelContext) private var modelContext
     @Query private var plants: [Plant]
+
+    // Remember whether the user has ever added a plant.
+    @AppStorage("hasEverAddedPlant")
+    private var hasEverAddedPlant = false
 
     @State private var showingSetReminder = false
     @State private var selectedPlant: Plant? = nil
-    
-    @Environment(\.modelContext) private var modelContext
-    
+
     private let viewModel = PlantViewModel()
 
     // MARK: - Today's Reminders
+
     private var todayPlants: [Plant] {
         plants.filter { plant in
             viewModel.isDueToday(plant)
@@ -35,9 +39,21 @@ struct ContentView: View {
             / Double(todayPlants.count)
     }
 
+    // All Done should only appear when there were
+    // actual reminders to complete today.
     private var allDone: Bool {
-        !plants.isEmpty &&
+        !todayPlants.isEmpty &&
         completedCount == todayPlants.count
+    }
+
+    // First-time user with no plants
+    private var isFirstLaunchEmptyState: Bool {
+        plants.isEmpty && !hasEverAddedPlant
+    }
+
+    private func openAddReminder() {
+        selectedPlant = nil
+        showingSetReminder = true
     }
 
     var body: some View {
@@ -47,13 +63,10 @@ struct ContentView: View {
             Color("Background")
                 .ignoresSafeArea()
 
-            VStack {
+            VStack(spacing: 0) {
 
                 // MARK: - Header
-                VStack(
-                    alignment: .leading,
-                    spacing: 0
-                ) {
+                VStack(alignment: .leading, spacing: 0) {
 
                     Text("My Plants 🌱")
                         .font(AppTypography.screenTitle)
@@ -80,8 +93,42 @@ struct ContentView: View {
                         )
                 }
 
-                // MARK: - Progress
-                if !allDone {
+                // MARK: - First-time Empty State
+                if isFirstLaunchEmptyState {
+
+                    StartPlantJourneyView {
+                        openAddReminder()
+                    }
+
+                // MARK: - No Reminders
+                } else if todayPlants.isEmpty {
+
+                    VStack {
+
+                        Spacer()
+
+                        Text("No reminders set yet..")
+                            .font(
+                                .system(
+                                    size: 18,
+                                    weight: .medium
+                                )
+                            )
+                            .foregroundStyle(
+                                Color("EmptyStateText")
+                            )
+
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+
+                // MARK: - All Completed
+                } else if allDone {
+
+                    AllRemindersCompletedView()
+
+                // MARK: - Today's Reminder List
+                } else {
 
                     VStack(spacing: 15) {
 
@@ -103,14 +150,6 @@ struct ContentView: View {
                         AppSpacing.screenPadding
                     )
                     .padding(.top, 38)
-                }
-
-                // MARK: - Completed or List
-                if allDone {
-
-                    AllRemindersCompletedView()
-
-                } else {
 
                     List(todayPlants) { plant in
 
@@ -126,26 +165,30 @@ struct ContentView: View {
                             },
                             onEdit: {
 
-                                // Open the existing plant
-                                // in the same Set Reminder sheet
                                 selectedPlant = plant
                                 showingSetReminder = true
                             }
                         )
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        .swipeActions(
+                            edge: .trailing,
+                            allowsFullSwipe: false
+                        ) {
+
                             Button(role: .destructive) {
+
                                 withAnimation {
                                     viewModel.deletePlant(
                                         plant,
                                         context: modelContext
                                     )
                                 }
+
                             } label: {
+
                                 Image(systemName: "trash")
                             }
                             .tint(Color("DestructiveRed"))
                         }
-
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(
                             Color("Background")
@@ -157,31 +200,45 @@ struct ContentView: View {
                 }
             }
 
-            // MARK: - Add Button
-            VStack {
+            // MARK: - Floating Add Button
+            // Hidden only on the first-launch screen
+            if !isFirstLaunchEmptyState {
 
-                Spacer()
-
-                HStack {
+                VStack {
 
                     Spacer()
 
-                    GlassCircleButton(
-                        symbol: "plus",
-                        isProminent: true,
-                        action: {
+                    HStack {
 
-                            // Open a blank form
-                            selectedPlant = nil
-                            showingSetReminder = true
-                        }
-                    )
+                        Spacer()
+
+                        GlassCircleButton(
+                            symbol: "plus",
+                            isProminent: true,
+                            action: {
+                                openAddReminder()
+                            }
+                        )
+                    }
+                    .padding(.trailing, 30)
+                    .padding(.bottom, 41)
                 }
-                .padding(.trailing, 30)
-                .padding(.bottom, 41)
             }
         }
         .preferredColorScheme(.dark)
+
+        // Existing users should never see onboarding
+        // again just because they deleted their plants.
+        .onAppear {
+            if !plants.isEmpty {
+                hasEverAddedPlant = true
+            }
+        }
+        .onChange(of: plants.count) { _, count in
+            if count > 0 {
+                hasEverAddedPlant = true
+            }
+        }
 
         // MARK: - Add / Edit Sheet
         .sheet(
