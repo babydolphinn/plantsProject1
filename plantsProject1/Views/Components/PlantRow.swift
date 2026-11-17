@@ -33,7 +33,7 @@ struct PlantRow: View {
                     if isWateredToday {
 
                         Circle()
-                            .fill(Color("MintAccent"))
+                            .fill(AppColors.mintAccent)
 
                         Image(systemName: "checkmark")
                             .font(
@@ -43,14 +43,14 @@ struct PlantRow: View {
                                 )
                             )
                             .foregroundStyle(
-                                Color("Background")
+                                AppColors.background
                             )
 
                     } else {
 
                         Circle()
                             .strokeBorder(
-                                Color("CheckboxRing"),
+                                AppColors.checkboxRing,
                                 lineWidth: 1.2
                             )
                     }
@@ -68,25 +68,25 @@ struct PlantRow: View {
                 Text("in \(plant.room.rawValue)")
                     .font(AppTypography.tag)
                     .foregroundStyle(
-                        Color("SecondaryText")
+                        AppColors.secondaryText
                     )
 
                 Text(plant.name)
                     .font(AppTypography.plantName)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColors.primaryText)
 
                 HStack(spacing: 13) {
 
                     TagPill(
                         title: plant.light.rawValue,
                         symbol: plant.light.symbol,
-                        colorName: "SunTag"
+                        color: AppColors.sunTag
                     )
 
                     TagPill(
                         title: plant.water.rawValue,
                         symbol: "drop",
-                        colorName: "WaterTag"
+                        color: AppColors.waterTag
                     )
                 }
                 .padding(.top, AppSpacing.pillRadius)
@@ -111,7 +111,7 @@ struct PlantRow: View {
         .overlay(alignment: .bottom) {
 
             Rectangle()
-                .fill(Color("RowDivider"))
+                .fill(AppColors.rowDivider)
                 .frame(height: 1)
         }
     }
