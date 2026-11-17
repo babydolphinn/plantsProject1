@@ -60,7 +60,7 @@ struct ContentView: View {
 
         ZStack {
 
-            Color("Background")
+            AppColors.background
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -70,7 +70,7 @@ struct ContentView: View {
 
                     Text("My Plants 🌱")
                         .font(AppTypography.screenTitle)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColors.primaryText)
                         .frame(
                             maxWidth: .infinity,
                             alignment: .leading
@@ -85,7 +85,7 @@ struct ContentView: View {
                         )
 
                     Rectangle()
-                        .fill(Color("HeaderDivider"))
+                        .fill(AppColors.headerDivider)
                         .frame(height: 1)
                         .padding(
                             .horizontal,
@@ -115,7 +115,7 @@ struct ContentView: View {
                                 )
                             )
                             .foregroundStyle(
-                                Color("EmptyStateText")
+                                AppColors.emptyStateText
                             )
 
                         Spacer()
@@ -138,7 +138,7 @@ struct ContentView: View {
                                 : "\(completedCount) of your plants feel loved today ✨"
                         )
                         .font(AppTypography.formLabel)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColors.primaryText)
                         .frame(maxWidth: .infinity)
 
                         AnimatedProgressBar(
@@ -201,16 +201,16 @@ struct ContentView: View {
 
                                 Image(systemName: "trash")
                             }
-                            .tint(Color("DestructiveRed"))
+                            .tint(AppColors.destructiveRed)
                         }
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(
-                            Color("Background")
+                            AppColors.background
                         )
                         .listRowSeparator(.hidden)
                     }
                     .scrollContentBackground(.hidden)
-                    .background(Color("Background"))
+                    .background(AppColors.background)
                 }
             }
 
@@ -239,7 +239,6 @@ struct ContentView: View {
                 }
             }
         }
-        .preferredColorScheme(.dark)
 
         .task {
             // Rebuild upcoming reminders when the app opens.
@@ -278,7 +277,7 @@ struct ContentView: View {
                 AppSpacing.sheetRadius
             )
             .presentationBackground(
-                Color("SheetBackground")
+                AppColors.sheetBackground
             )
         }
     }
