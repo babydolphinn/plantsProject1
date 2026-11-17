@@ -7,16 +7,16 @@ struct TagPill: View {
     let title: String
     let symbol: String
 
-    // Use an existing color from Assets
-    let colorName: String
+    // Theme color supplied by the caller
+    let color: Color
 
     var body: some View {
         Label(title, systemImage: symbol)
             .font(AppTypography.tag)
-            .foregroundStyle(Color(colorName))
+            .foregroundStyle(color)
             .padding(.horizontal, AppSpacing.pillRadius)
             .frame(height: 23)
-            .background(Color("PillBackground"))
+            .background(AppColors.pillBackground)
             .clipShape(
                 RoundedRectangle(cornerRadius: AppSpacing.pillRadius)
             )
