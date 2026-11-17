@@ -10,7 +10,7 @@ struct AllRemindersCompletedView: View {
             ZStack {
                 // Dark oval behind the plant, matching Sketch
                 Ellipse()
-                    .fill(Color("AllDoneBlob").opacity(0.58))
+                    .fill(AppColors.allDoneBlob.opacity(0.58))
                     .frame(width: 219, height: 227)
 
                 // Plant illustration exported from Sketch
@@ -23,16 +23,16 @@ struct AllRemindersCompletedView: View {
 
             Text("All Done! 🎉")
                 .font(AppTypography.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColors.primaryText)
                 .padding(.top, AppSpacing.screenPadding)
 
             Text("All Reminders Completed")
                 .font(AppTypography.body)
-                .foregroundStyle(Color("EmptyStateText"))
+                .foregroundStyle(AppColors.emptyStateText)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .offset(y: -35)
-        .background(Color("Background"))
+        .background(AppColors.background)
     }
 }
 
