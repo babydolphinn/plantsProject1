@@ -16,7 +16,7 @@ struct StartPlantJourneyView: View {
 
             Text("Start your plant journey!")
                 .font(AppTypography.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColors.primaryText)
                 .multilineTextAlignment(.center)
                 .padding(.top, 36)
 
@@ -24,7 +24,7 @@ struct StartPlantJourneyView: View {
                 "Now all your plants will be in one place and we will help you take care of them :)🪴"
             )
             .font(AppTypography.body)
-            .foregroundStyle(Color("BodyText"))
+            .foregroundStyle(AppColors.bodyText)
             .multilineTextAlignment(.center)
             .frame(maxWidth: 315)
             .padding(.top, 24)
@@ -33,11 +33,11 @@ struct StartPlantJourneyView: View {
 
                 Text("Set Plant Reminder")
                     .font(AppTypography.formLabel)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColors.primaryText)
                     .frame(width: 280, height: 42)
             }
             .buttonStyle(.glassProminent)
-            .tint(Color("BrandGreen"))
+            .tint(AppColors.brandGreen)
             .padding(.top, 102)
 
             Spacer(minLength: 0)
@@ -48,7 +48,7 @@ struct StartPlantJourneyView: View {
             alignment: .top
         )
         .padding(.top, 50)
-        .background(Color("Background"))
+        .background(AppColors.background)
     }
 }
 
