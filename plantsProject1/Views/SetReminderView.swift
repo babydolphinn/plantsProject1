@@ -57,7 +57,7 @@ struct SetReminderView: View {
 
                 Text("Set Reminder")
                     .font(AppTypography.formLabel)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColors.primaryText)
 
                 Spacer()
 
@@ -84,15 +84,15 @@ struct SetReminderView: View {
 
                         Text("Plant Name")
                             .font(AppTypography.formLabel)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppColors.primaryText)
 
                         TextField(
                             "Pothos",
                             text: $plantName
                         )
                         .font(AppTypography.formLabel)
-                        .foregroundStyle(.white)
-                        .tint(Color("MintAccent"))
+                        .foregroundStyle(AppColors.primaryText)
+                        .tint(AppColors.mintAccent)
                         .multilineTextAlignment(.trailing)
                     }
                     .padding(AppSpacing.screenPadding)
@@ -111,7 +111,7 @@ struct SetReminderView: View {
                         )
 
                         Rectangle()
-                            .fill(Color("CardDivider"))
+                            .fill(AppColors.cardDivider)
                             .frame(height: 1)
 
                         PickerRow(
@@ -136,7 +136,7 @@ struct SetReminderView: View {
                         )
 
                         Rectangle()
-                            .fill(Color("CardDivider"))
+                            .fill(AppColors.cardDivider)
                             .frame(height: 1)
 
                         PickerRow(
@@ -161,7 +161,7 @@ struct SetReminderView: View {
                             Text("Delete Reminder")
                                 .font(AppTypography.formLabel)
                                 .foregroundStyle(
-                                    Color("DestructiveRed")
+                                    AppColors.destructiveRed
                                 )
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
@@ -179,8 +179,7 @@ struct SetReminderView: View {
             Spacer()
         }
         .padding(.top, AppSpacing.screenPadding)
-        .background(Color("SheetBackground"))
-        .preferredColorScheme(.dark)
+        .background(AppColors.sheetBackground)
     }
 
     // MARK: - Save
