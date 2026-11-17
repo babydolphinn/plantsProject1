@@ -14,11 +14,11 @@ where Option.RawValue == String {
         HStack(spacing: AppSpacing.screenPadding) {
 
             Image(systemName: symbol)
-                .foregroundStyle(Color("SecondaryText"))
+                .foregroundStyle(AppColors.secondaryText)
 
             Text(title)
                 .font(AppTypography.formLabel)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColors.primaryText)
 
             Spacer()
 
@@ -30,7 +30,7 @@ where Option.RawValue == String {
             }
             .labelsHidden()
             .pickerStyle(.menu)
-            .tint(Color("SecondaryText"))
+            .tint(AppColors.secondaryText)
         }
         .padding(.horizontal, AppSpacing.screenPadding)
         .frame(height: 44)
