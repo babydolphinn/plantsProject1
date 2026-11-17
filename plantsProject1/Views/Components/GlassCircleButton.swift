@@ -14,7 +14,7 @@ struct GlassCircleButton: View {
                     buttonLabel
                 }
                 .buttonStyle(.glassProminent)
-                .tint(Color("BrandGreen"))
+                .tint(AppColors.brandGreen)
             } else {
                 Button(action: action) {
                     buttonLabel
@@ -29,7 +29,7 @@ struct GlassCircleButton: View {
     private var buttonLabel: some View {
         Image(systemName: symbol)
             .font(AppTypography.headline)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColors.primaryText)
             .frame(width: 44, height: 44)
             .contentShape(Circle())
     }
