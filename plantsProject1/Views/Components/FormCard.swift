@@ -10,7 +10,7 @@ struct FormCard<Content: View>: View {
         VStack(spacing: 0) {
             content()
         }
-        .background(Color("CardBackground"))
+        .background(AppColors.cardBackground)
         .clipShape(
             RoundedRectangle(
                 cornerRadius: AppSpacing.cardRadius
