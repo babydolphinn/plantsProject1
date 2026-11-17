@@ -12,11 +12,11 @@ struct AnimatedProgressBar: View {
 
                 // Background track
                 Capsule()
-                    .fill(Color("ProgressTrack"))
+                    .fill(AppColors.progressTrack)
 
                 // Filled portion
                 Capsule()
-                    .fill(Color("BrandGreen"))
+                    .fill(AppColors.brandGreen)
                     .frame(
                         width: geometry.size.width *
                             min(max(progress, 0), 1)
